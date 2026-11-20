@@ -1,0 +1,27 @@
+name: Build ESP32 Firmware
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "**" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:v4.4.7
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build with idf.py
+        run: |
+          . /opt/esp/idf/export.sh
+          idf.py build
+
+      - name: Upload bin files
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-binaries
+          path: build/*.bin
+          
